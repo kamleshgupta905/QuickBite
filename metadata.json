@@ -1,0 +1,7 @@
+{
+  "name": "QuickBite",
+  "description": "A premium, modern food delivery application with pixel-perfect UI, responsive design, and smooth interactions.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
