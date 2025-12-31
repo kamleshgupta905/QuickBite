@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { Search, ShoppingBasket, Menu, Facebook, Twitter, Linkedin, MapPin, ChevronDown, Loader2 } from 'lucide-react';
 import { ScreenType } from '../types';
+import { AIAvatarChat } from './AIAvatarChat';
 
 interface LayoutProps {
   currentScreen: ScreenType;
@@ -43,7 +45,6 @@ export const Header: React.FC<{
                setSubAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
             }
           } catch (error) {
-            // Fallback if API fails but we have coords
             setAddress('Location Detected');
             setSubAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
           } finally {
@@ -56,7 +57,6 @@ export const Header: React.FC<{
           setSubAddress('123, Green Park, Indiranagar, Bangalore');
           setIsLoadingLocation(false);
         },
-        // enableHighAccuracy: false is faster and less likely to time out on non-GPS devices
         { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
       );
     } else {
@@ -70,7 +70,6 @@ export const Header: React.FC<{
     fetchLocation();
   }, []);
 
-  // --- ADMIN HEADER ---
   if (currentScreen === 'ADMIN') {
     return (
       <header className="sticky top-0 z-50 bg-white py-4 px-6 md:px-[4vw] flex items-center justify-between shadow-sm border-b border-gray-200 animate-fade-in">
@@ -87,17 +86,13 @@ export const Header: React.FC<{
     );
   }
 
-  // --- USER HEADER ---
   return (
     <header className="sticky top-0 z-50 bg-white py-4 md:py-5 px-6 md:px-[8vw] flex items-center justify-between transition-all shadow-sm md:shadow-none">
-      
-      {/* Logo & Location Block (Swiggy Style) */}
       <div className="flex items-center gap-8">
           <div className="cursor-pointer" onClick={() => onNavigate('HOME')}>
              <h1 className="text-primary font-bold text-3xl tracking-tight">QuickBite.</h1>
           </div>
           
-          {/* Location Selector */}
           <div 
             className="hidden lg:flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity group"
             onClick={fetchLocation}
@@ -116,35 +111,13 @@ export const Header: React.FC<{
           </div>
       </div>
 
-      {/* Desktop Navigation */}
       <nav className="hidden md:flex items-center gap-8 text-[#49557e] text-[17px] font-medium">
-        <button 
-            onClick={() => onNavigate('HOME')} 
-            className={`hover:text-primary transition-colors cursor-pointer ${currentScreen === 'HOME' ? 'border-b-2 border-primary pb-1' : ''}`}
-        >
-            home
-        </button>
-        <button 
-            onClick={() => onNavigate('RESTAURANT')} 
-            className={`hover:text-primary transition-colors cursor-pointer ${currentScreen === 'RESTAURANT' ? 'border-b-2 border-primary pb-1' : ''}`}
-        >
-            menu
-        </button>
-        <button 
-            onClick={() => onNavigate('COMBOS')}
-            className={`hover:text-primary transition-colors cursor-pointer ${currentScreen === 'COMBOS' ? 'border-b-2 border-primary pb-1' : ''}`}
-        >
-            combos
-        </button>
-        <button 
-            onClick={() => onNavigate('CONTACT')}
-            className={`hover:text-primary transition-colors cursor-pointer ${currentScreen === 'CONTACT' ? 'border-b-2 border-primary pb-1' : ''}`}
-        >
-            contact us
-        </button>
+        <button onClick={() => onNavigate('HOME')} className={`hover:text-primary transition-colors cursor-pointer ${currentScreen === 'HOME' ? 'border-b-2 border-primary pb-1' : ''}`}>home</button>
+        <button onClick={() => onNavigate('RESTAURANT')} className={`hover:text-primary transition-colors cursor-pointer ${currentScreen === 'RESTAURANT' ? 'border-b-2 border-primary pb-1' : ''}`}>menu</button>
+        <button onClick={() => onNavigate('COMBOS')} className={`hover:text-primary transition-colors cursor-pointer ${currentScreen === 'COMBOS' ? 'border-b-2 border-primary pb-1' : ''}`}>combos</button>
+        <button onClick={() => onNavigate('CONTACT')} className={`hover:text-primary transition-colors cursor-pointer ${currentScreen === 'CONTACT' ? 'border-b-2 border-primary pb-1' : ''}`}>contact us</button>
       </nav>
 
-      {/* Actions */}
       <div className="flex items-center gap-4 md:gap-6">
         <button onClick={() => onNavigate('SEARCH')} className="text-[#49557e] hover:text-primary transition-colors">
             <Search className="w-6 h-6" />
@@ -230,7 +203,8 @@ export const Layout: React.FC<LayoutProps> = ({ currentScreen, setCurrentScreen,
       <main className="flex-1 w-full mx-auto">
         {children}
       </main>
-      {/* Hide Footer on Admin Screen */}
+      {/* Persistent AI Chat Widget */}
+      {currentScreen !== 'ADMIN' && <AIAvatarChat />}
       {currentScreen !== 'ADMIN' && <Footer />}
     </div>
   );
